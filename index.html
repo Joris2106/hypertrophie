@@ -662,6 +662,116 @@ html, body {
   letter-spacing: 1px;
 }
 
+/* ── SESSION TRACKING ── */
+.ex-sets-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 14px 52px;
+  flex-wrap: wrap;
+}
+
+.set-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.set-dot.done {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0a0a0a;
+}
+
+.set-dot.current {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(232,255,71,0.15);
+}
+
+.sets-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.ex-card.all-done {
+  border-color: rgba(232,255,71,0.3);
+  background: #0f110a;
+}
+.ex-card.all-done .ex-index { color: var(--accent); }
+
+/* ── REST TIMER OVERLAY ── */
+.rest-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.93);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+}
+.rest-overlay.show { display: flex; }
+
+.rest-overlay-label {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.rest-overlay-ex { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.rest-overlay-series { font-size: 12px; color: var(--muted); margin-bottom: 36px; }
+
+.rest-timer-circle { position: relative; width: 200px; height: 200px; margin-bottom: 36px; }
+.rest-timer-svg { transform: rotate(-90deg); }
+.timer-track { fill: none; stroke: var(--border); stroke-width: 6; }
+.timer-progress { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+
+.timer-text {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.timer-seconds { font-family: "Bebas Neue", sans-serif; font-size: 72px; line-height: 1; color: var(--accent); }
+.timer-unit { font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+
+.rest-skip-btn {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 32px; color: var(--text);
+  font-family: "DM Sans", sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; margin-bottom: 12px; width: 100%; max-width: 280px;
+}
+.rest-add-btn { background: none; border: none; color: var(--muted); font-size: 13px; cursor: pointer; padding: 8px; }
+
+/* ── SESSION DONE BANNER ── */
+.session-done-banner {
+  margin: 12px 16px;
+  background: rgba(232,255,71,0.08);
+  border: 1px solid rgba(232,255,71,0.3);
+  border-radius: 12px; padding: 16px; text-align: center; display: none;
+}
+.session-done-banner.show { display: block; }
+.session-done-title { font-family: "Bebas Neue", sans-serif; font-size: 22px; color: var(--accent); }
+.session-done-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.reset-session-btn {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 16px; color: var(--muted); font-size: 11px; cursor: pointer; margin-top: 10px; letter-spacing: 1px;
+}
+
 /* ANIMATIONS */
 .day-view.active { animation: fadeIn 0.25s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -791,6 +901,11 @@ html, body {
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Épaules</span><span class="vol-pill-val">7 séries</span></div>
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Triceps</span><span class="vol-pill-val">6 séries</span></div>
         </div>
+        <div class="session-done-banner" id="session-done-0">
+          <div class="session-done-title">💪 SÉANCE TERMINÉE !</div>
+          <div class="session-done-sub">Toutes les séries sont complètes. Excellent travail.</div>
+          <button class="reset-session-btn" onclick="resetSession(0)">↺ Recommencer la séance</button>
+        </div>
         <div class="exercises-list" id="list-0"></div>
       </div>
 
@@ -805,6 +920,11 @@ html, body {
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Dos</span><span class="vol-pill-val">11 séries</span></div>
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Biceps</span><span class="vol-pill-val">6 séries</span></div>
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Arrière épaules</span><span class="vol-pill-val">4 séries</span></div>
+        </div>
+        <div class="session-done-banner" id="session-done-1">
+          <div class="session-done-title">💪 SÉANCE TERMINÉE !</div>
+          <div class="session-done-sub">Toutes les séries sont complètes. Excellent travail.</div>
+          <button class="reset-session-btn" onclick="resetSession(1)">↺ Recommencer la séance</button>
         </div>
         <div class="exercises-list" id="list-1"></div>
       </div>
@@ -830,6 +950,11 @@ html, body {
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Ischio-jamb.</span><span class="vol-pill-val">7 séries</span></div>
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Mollets</span><span class="vol-pill-val">4 séries</span></div>
         </div>
+        <div class="session-done-banner" id="session-done-3">
+          <div class="session-done-title">💪 SÉANCE TERMINÉE !</div>
+          <div class="session-done-sub">Toutes les séries sont complètes. Excellent travail.</div>
+          <button class="reset-session-btn" onclick="resetSession(3)">↺ Recommencer la séance</button>
+        </div>
         <div class="exercises-list" id="list-3"></div>
       </div>
 
@@ -844,6 +969,11 @@ html, body {
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Pectoraux</span><span class="vol-pill-val">3 séries</span></div>
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Dos</span><span class="vol-pill-val">7 séries</span></div>
           <div class="vol-pill"><div class="vol-pill-dot"></div><span class="vol-pill-label">Bras</span><span class="vol-pill-val">10 séries</span></div>
+        </div>
+        <div class="session-done-banner" id="session-done-4">
+          <div class="session-done-title">💪 SÉANCE TERMINÉE !</div>
+          <div class="session-done-sub">Toutes les séries sont complètes. Excellent travail.</div>
+          <button class="reset-session-btn" onclick="resetSession(4)">↺ Recommencer la séance</button>
         </div>
         <div class="exercises-list" id="list-4"></div>
       </div>
@@ -934,6 +1064,27 @@ html, body {
   </button>
 </div>
 
+
+<!-- REST TIMER OVERLAY -->
+<div class="rest-overlay" id="rest-overlay">
+  <div class="rest-overlay-label">Temps de repos</div>
+  <div class="rest-overlay-ex" id="rest-ex-name"></div>
+  <div class="rest-overlay-series" id="rest-series-info"></div>
+  <div class="rest-timer-circle">
+    <svg class="rest-timer-svg" viewBox="0 0 200 200" width="200" height="200">
+      <circle class="timer-track" cx="100" cy="100" r="88"/>
+      <circle class="timer-progress" id="timer-arc" cx="100" cy="100" r="88"
+        stroke-dasharray="553" stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-text">
+      <div class="timer-seconds" id="timer-display">90</div>
+      <div class="timer-unit">sec</div>
+    </div>
+  </div>
+  <button class="rest-skip-btn" onclick="skipRest()">⏭ Passer le repos</button>
+  <button class="rest-add-btn" onclick="addRestTime(30)">+ 30 sec</button>
+</div>
+
 <!-- WEEK MODAL -->
 <div class="modal-overlay" id="week-modal" onclick="closeWeekModal(event)">
   <div class="modal-sheet">
@@ -1007,6 +1158,10 @@ function renderExercises() {
       const card = document.createElement('div');
       card.className = 'ex-card' + (hasWeight ? ' has-weight' : '');
       card.id = 'card-' + ex.id;
+      const setsDotsHTML = Array.from({length: ex.sets}, (_, si) =>
+        `<div class="set-dot" id="dot-${ex.id}-${si}" onclick="completeSerie('${ex.id}',${si})">${si+1}</div>`
+      ).join('');
+
       card.innerHTML = `
         <div class="ex-card-top" onclick="toggleTip('${ex.id}')">
           <div class="ex-index">${i+1}</div>
@@ -1018,6 +1173,10 @@ function renderExercises() {
             <div class="badge badge-sets">${ex.sets}×</div>
             <div class="badge badge-reps">${ex.reps}</div>
           </div>
+        </div>
+        <div class="ex-sets-row">
+          <div class="sets-label">Séries</div>
+          ${setsDotsHTML}
         </div>
         <div class="ex-weight-row">
           <div class="weight-label">Poids</div>
@@ -1036,6 +1195,8 @@ function renderExercises() {
         </div>
         <div class="ex-tip-row">${ex.tip}</div>
       `;
+      // Restore set progress
+      restoreSetProgress(ex);
       list.appendChild(card);
     });
   });
@@ -1064,12 +1225,140 @@ function adjustWeight(id, delta) {
   saveWeight(id, val);
 }
 
+
+// ── SESSION TRACKING ────────────────────────────────────────────────────
+let timerInterval = null;
+let timerRemaining = 0;
+let timerTotal = 0;
+let currentRestEx = null;
+
+function parseRestSeconds(restStr) {
+  if (restStr.includes('min')) {
+    const mins = parseFloat(restStr);
+    return Math.round(mins * 60);
+  }
+  return parseInt(restStr) || 90;
+}
+
+function restoreSetProgress(ex) {
+  const done = parseInt(localStorage.getItem('sets_' + ex.id) || '0');
+  for (let si = 0; si < ex.sets; si++) {
+    const dot = document.getElementById('dot-' + ex.id + '-' + si);
+    if (!dot) continue;
+    if (si < done) { dot.classList.add('done'); dot.classList.remove('current'); }
+    else if (si === done) { dot.classList.add('current'); dot.classList.remove('done'); }
+    else { dot.classList.remove('done','current'); }
+  }
+  const card = document.getElementById('card-' + ex.id);
+  if (done >= ex.sets) card.classList.add('all-done');
+  else card.classList.remove('all-done');
+}
+
+function completeSerie(exId, serieIdx) {
+  // Find exercise data
+  const allEx = [...DAYS[0],...DAYS[1],...DAYS[3],...DAYS[4]];
+  const ex = allEx.find(e => e.id === exId);
+  if (!ex) return;
+
+  const done = parseInt(localStorage.getItem('sets_' + exId) || '0');
+
+  // Only allow clicking current serie
+  if (serieIdx !== done) return;
+
+  const newDone = done + 1;
+  localStorage.setItem('sets_' + exId, newDone);
+  restoreSetProgress(ex);
+
+  // Check if all exercises on this day are done
+  checkSessionComplete();
+
+  // Start rest timer if not last serie
+  if (newDone < ex.sets) {
+    startRest(ex, newDone, ex.sets);
+  } else if (newDone === ex.sets) {
+    // Last serie done — short vibration feedback
+    if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+  }
+}
+
+function startRest(ex, seriesDone, totalSeries) {
+  const secs = parseRestSeconds(ex.rest);
+  timerRemaining = secs;
+  timerTotal = secs;
+  currentRestEx = ex;
+
+  document.getElementById('rest-ex-name').textContent = ex.name;
+  document.getElementById('rest-series-info').textContent = 'Série ' + seriesDone + ' / ' + totalSeries + ' terminée';
+
+  updateTimerDisplay();
+  document.getElementById('rest-overlay').classList.add('show');
+
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+    updateTimerDisplay();
+    if (timerRemaining <= 3 && navigator.vibrate) navigator.vibrate(100);
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      skipRest();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  document.getElementById('timer-display').textContent = timerRemaining;
+  const circumference = 553;
+  const progress = timerRemaining / timerTotal;
+  const offset = circumference * (1 - progress);
+  document.getElementById('timer-arc').style.strokeDashoffset = offset;
+  // Color warning
+  const arc = document.getElementById('timer-arc');
+  if (timerRemaining <= 10) arc.style.stroke = 'var(--accent2)';
+  else arc.style.stroke = 'var(--accent)';
+}
+
+function skipRest() {
+  if (timerInterval) clearInterval(timerInterval);
+  document.getElementById('rest-overlay').classList.remove('show');
+  if (navigator.vibrate) navigator.vibrate(50);
+}
+
+function addRestTime(secs) {
+  timerRemaining += secs;
+  timerTotal += secs;
+  updateTimerDisplay();
+}
+
+function checkSessionComplete() {
+  const dayMap = {0:0, 1:1, 3:2, 4:3};
+  const dayExercises = DAYS[currentDay];
+  if (!dayExercises) return;
+  const allDone = dayExercises.every(ex => {
+    const done = parseInt(localStorage.getItem('sets_' + ex.id) || '0');
+    return done >= ex.sets;
+  });
+  const banner = document.getElementById('session-done-' + currentDay);
+  if (banner) banner.classList.toggle('show', allDone);
+}
+
+function resetSession(dayIdx) {
+  const exercises = DAYS[dayIdx];
+  if (!exercises) return;
+  if (!confirm('Réinitialiser toutes les séries de cette séance ?')) return;
+  exercises.forEach(ex => localStorage.removeItem('sets_' + ex.id));
+  renderExercises();
+  const banner = document.getElementById('session-done-' + dayIdx);
+  if (banner) banner.classList.remove('show');
+}
+
 // ── DAY NAVIGATION ────────────────────────────────────────────────────
 function selectDay(idx) {
   currentDay = idx;
   document.querySelectorAll('.day-view').forEach((v, i) => v.classList.toggle('active', i === idx));
   document.querySelectorAll('.day-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
   document.getElementById('scroll-area').scrollTop = 0;
+  checkSessionComplete();
 }
 
 // ── TAB NAVIGATION ────────────────────────────────────────────────────
