@@ -523,6 +523,8 @@ html, body {
 .nav-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
 
 /* ── NUTRITION TAB ── */
+#tab-programme { display: none; }
+#tab-programme.active { display: block; }
 #tab-nutrition { display: none; }
 #tab-nutrition.active { display: block; }
 
@@ -775,7 +777,7 @@ html, body {
   <div class="scroll-area" id="scroll-area">
 
     <!-- ═══════════════════════ PROGRAMME TAB ═══════════════════════ -->
-    <div id="tab-programme">
+    <div id="tab-programme" class="active">
 
       <!-- DAY 0 : PUSH -->
       <div class="day-view active" id="day-0">
